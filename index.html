@@ -19,7 +19,6 @@
             overscroll-behavior-y: none; 
         }
 
-        /* حاوية الـ 3D الثابتة */
         .viewer-container {
             position: fixed;
             top: 0;
@@ -28,6 +27,9 @@
             height: 50vh;
             z-index: 10;
             background-color: #050505;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         model-viewer {
@@ -36,7 +38,15 @@
             --poster-color: transparent;
         }
 
-        /* حاوية السكرول والمحتوى */
+        /* مؤشر تحميل بسيط عشان نعرف إنه بيحمل */
+        #loading-text {
+            position: absolute;
+            color: #00ffcc;
+            font-size: 0.9rem;
+            z-index: 5;
+            letter-spacing: 2px;
+        }
+
         .scroll-container {
             position: relative;
             z-index: 20;
@@ -123,9 +133,9 @@
 <body>
 
     <div class="viewer-container">
+        <div id="loading-text">LOADING 3D MODEL...</div>
         <model-viewer 
             id="productModel"
-            src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/SheenChair/glTF-Binary/SheenChair.glb" 
             alt="3D Premium Product" 
             camera-controls
             touch-action="pan-y"
@@ -136,7 +146,6 @@
     </div>
 
     <div class="scroll-container">
-        
         <div class="scroll-section">
             <div class="hero-section">
                 <h1>The Future Tech</h1>
@@ -162,6 +171,22 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
         const model = document.getElementById('productModel');
+        const loadingText = document.getElementById('loading-text');
+
+        // الخدعة البديلة: تحميل الموديل كـ Blob لتخطي الحظر والـ CORS
+        const modelUrl = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/SheenChair/glTF-Binary/SheenChair.glb";
+        
+        fetch(modelUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const localUrl = URL.createObjectURL(blob);
+                model.src = localUrl; // وضع الرابط المحلي الآمن
+                loadingText.style.display = 'none'; // إخفاء كلمة جاري التحميل
+            })
+            .catch(error => {
+                console.error("Error loading model:", error);
+                loadingText.innerText = "FAILED TO LOAD 3D (TRY VPN)";
+            });
 
         ScrollTrigger.create({
             trigger: ".scroll-container",
@@ -170,7 +195,6 @@
             onEnter: () => model.removeAttribute('auto-rotate')
         });
 
-        // تحريك الكاميرا وزاوية الرؤية وعمل زوم تفصيصي مع السكرول
         gsap.to(model, {
             scrollTrigger: {
                 trigger: ".scroll-container",

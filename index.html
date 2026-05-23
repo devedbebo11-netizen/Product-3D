@@ -16,7 +16,6 @@
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
-            /* منع الـ bounce المطاطي في سكرول الموبايل */
             overscroll-behavior-y: none; 
         }
 
@@ -26,7 +25,7 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 50vh; /* على الموبايل واخد نص الشاشة الفوقاني */
+            height: 50vh;
             z-index: 10;
             background-color: #050505;
         }
@@ -41,7 +40,7 @@
         .scroll-container {
             position: relative;
             z-index: 20;
-            margin-top: 50vh; /* بيبدأ من تحت الـ 3D عشان مايغطيش عليه */
+            margin-top: 50vh;
         }
 
         .scroll-section {
@@ -53,7 +52,6 @@
             box-sizing: border-box;
         }
 
-        /* سيكشن البداية الهيرو */
         .hero-section {
             text-align: center;
             padding: 20px;
@@ -66,7 +64,7 @@
             background: linear-gradient(45deg, #ff0055, #00ffcc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text; /* السطر القياسي اللي بيصلح الـ Warning */
+            background-clip: text;
         }
 
         .hero-section p {
@@ -75,7 +73,6 @@
             line-height: 1.5;
         }
 
-        /* كروت الشرح المتوافقة مع الموبايل */
         .content-box {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -85,7 +82,7 @@
             width: 100%;
             max-width: 320px;
             opacity: 0;
-            transform: translateY(30px); /* الحركة للموبايل من تحت لفوق أشيك */
+            transform: translateY(30px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
@@ -102,7 +99,6 @@
             line-height: 1.6;
         }
 
-        /* للتوافق مع الشاشات الكبيرة (الكمبيوتر) لو اتفتحت منه */
         @media (min-width: 768px) {
             .viewer-container {
                 width: 50vw;
@@ -129,10 +125,10 @@
     <div class="viewer-container">
         <model-viewer 
             id="productModel"
-            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
-            alt="3D Product" 
+            src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/SheenChair/glTF-Binary/SheenChair.glb" 
+            alt="3D Premium Product" 
             camera-controls
-            touch-action="pan-y" /* بيسمح بسكرول الصفحة حتى لو صباعك جه على الـ 3D */
+            touch-action="pan-y"
             disable-zoom
             auto-rotate
             shadow-intensity="1">
@@ -164,11 +160,9 @@
     </div>
 
     <script>
-        // تفعيل الـ Plugins
         gsap.registerPlugin(ScrollTrigger);
         const model = document.getElementById('productModel');
 
-        // إيقاف الدوران التلقائي مع السكرول
         ScrollTrigger.create({
             trigger: ".scroll-container",
             start: "top top",
@@ -176,7 +170,7 @@
             onEnter: () => model.removeAttribute('auto-rotate')
         });
 
-        // تحريك الكاميرا (التفصيص والزوم) مع السكرول
+        // تحريك الكاميرا وزاوية الرؤية وعمل زوم تفصيصي مع السكرول
         gsap.to(model, {
             scrollTrigger: {
                 trigger: ".scroll-container",
@@ -190,7 +184,6 @@
             }
         });
 
-        // أنيميشن ظهور الكروت (تطلع من تحت لفوق بنعومة)
         gsap.to("#box1", {
             scrollTrigger: {
                 trigger: "#box1",

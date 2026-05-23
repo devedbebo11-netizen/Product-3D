@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mobile-First 3D Showcase</title>
+    <title>Pure CSS 3D Premium Showcase</title>
     
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
@@ -14,11 +13,12 @@
             margin: 0;
             background-color: #050505;
             color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow-x: hidden;
-            overscroll-behavior-y: none; 
+            overscroll-behavior-y: none;
         }
 
+        /* حاوية الـ 3D */
         .viewer-container {
             position: fixed;
             top: 0;
@@ -30,23 +30,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            perspective: 1000px; /* تفعيل البُعد الثالث */
         }
 
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            --poster-color: transparent;
+        /* المسرح الـ 3D اللي بيلف بالإيد */
+        .scene3d {
+            width: 150px;
+            height: 150px;
+            transform-style: preserve-3d;
+            transform: rotateX(-20deg) rotateY(20deg);
+            cursor: grab;
+            touch-action: none; /* عشان نلقط حركات الصباع بالـ JS */
         }
 
-        /* مؤشر تحميل بسيط عشان نعرف إنه بيحمل */
-        #loading-text {
+        .scene3d:active { cursor: grabbing; }
+
+        /* الأوجه الستة للمكعب */
+        .face {
             position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(0, 255, 192, 0.08);
+            border: 2px solid #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 192, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
             color: #00ffcc;
-            font-size: 0.9rem;
-            z-index: 5;
-            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: transform 0.1s ease-out;
+            backface-visibility: visible;
         }
 
+        /* ترتيب الأوجه في الفراغ الـ 3D لتكوين المكعب الأصلي */
+        .front  { transform: translateZ(75px); }
+        .back   { transform: rotateY(180deg) translateZ(75px); border-color: #ff0055; color: #ff0055; background: rgba(255, 0, 85, 0.05); }
+        .right  { transform: rotateY(90deg) translateZ(75px); }
+        .left   { transform: rotateY(-90deg) translateZ(75px); }
+        .top    { transform: rotateX(90deg) translateZ(75px); }
+        .bottom { transform: rotateX(-90deg) translateZ(75px); }
+
+        /* حاوية السكرول والكلام */
         .scroll-container {
             position: relative;
             z-index: 20;
@@ -102,132 +129,131 @@
             color: #00ffcc;
         }
 
-        .content-box p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #ccc;
-            line-height: 1.6;
-        }
-
         @media (min-width: 768px) {
-            .viewer-container {
-                width: 50vw;
-                height: 100vh;
-                left: auto;
-                right: 0;
-            }
-            .scroll-container {
-                margin-top: 0;
-                width: 50vw;
-            }
-            .scroll-section {
-                justify-content: flex-start;
-                padding-left: 10%;
-            }
-            .content-box {
-                transform: translateX(-50px);
-            }
+            .viewer-container { width: 50vw; height: 100vh; left: auto; right: 0; }
+            .scroll-container { margin-top: 0; width: 50vw; }
+            .scroll-section { justify-content: flex-start; padding-left: 10%; }
         }
     </style>
 </head>
 <body>
 
     <div class="viewer-container">
-        <div id="loading-text">LOADING 3D MODEL...</div>
-        <model-viewer 
-            id="productModel"
-            alt="3D Premium Product" 
-            camera-controls
-            touch-action="pan-y"
-            disable-zoom
-            auto-rotate
-            shadow-intensity="1">
-        </model-viewer>
+        <div class="scene3d" id="cube">
+            <div class="face front">Core Tech</div>
+            <div class="face back">Sensors</div>
+            <div class="face right">Battery</div>
+            <div class="face left">AI Chip</div>
+            <div class="face top">Top Case</div>
+            <div class="face bottom">Base</div>
+        </div>
     </div>
 
     <div class="scroll-container">
         <div class="scroll-section">
             <div class="hero-section">
-                <h1>The Future Tech</h1>
-                <p>🎰 حرك صباعك فوق عشان تلف المنتج <br> واسحب الشاشة تحت عشان تفصصه</p>
+                <h1>Pure CSS 3D</h1>
+                <p>🎰 حرك صباعك فوق الصندوق عشان تلفه <br> واسحب الشاشة تحت عشان تفصصه</p>
             </div>
         </div>
 
         <div class="scroll-section">
             <div class="content-box" id="box1">
-                <h2>01. Ultra-Light Material</h2>
-                <p>ملمس مريح جداً على اليد مع وزن خفيف ك الريشة، متقفل بالكامل بمواد Premium مخصصة للتحمل الفائق.</p>
+                <h2>01. Explosion View</h2>
+                <p>شايف الـ Wow Factor؟ أول ما عملت سكرول، الأوجه الستة للمنتج اتفصصت وطارت لبرة بالكود وبنعومة 60fps.</p>
             </div>
         </div>
 
         <div class="scroll-section">
             <div class="content-box" id="box2">
-                <h2>02. Next-Gen Sensors</h2>
-                <p>المستشعرات الذكية مخفية بالداخل وبتتفاعل مع حركة الجسم والبيئة المحيطة فورا وبذكاء اصطناعي.</p>
+                <h2>02. Infinite Customization</h2>
+                <p>التكنيك ده شغال على أي تليفون في العالم وسريع طلقة، وتقدر تحط جوة الأوجه دي صور أو أي ستايل يعجبك.</p>
             </div>
         </div>
     </div>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
-        const model = document.getElementById('productModel');
-        const loadingText = document.getElementById('loading-text');
 
-        // الخدعة البديلة: تحميل الموديل كـ Blob لتخطي الحظر والـ CORS
-        const modelUrl = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/SheenChair/glTF-Binary/SheenChair.glb";
-        
-        fetch(modelUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const localUrl = URL.createObjectURL(blob);
-                model.src = localUrl; // وضع الرابط المحلي الآمن
-                loadingText.style.display = 'none'; // إخفاء كلمة جاري التحميل
-            })
-            .catch(error => {
-                console.error("Error loading model:", error);
-                loadingText.innerText = "FAILED TO LOAD 3D (TRY VPN)";
-            });
+        const cube = document.getElementById('cube');
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let rotation = { x: -20, y: 20 };
 
-        ScrollTrigger.create({
-            trigger: ".scroll-container",
-            start: "top top",
-            onLeaveBack: () => model.setAttribute('auto-rotate', ''),
-            onEnter: () => model.removeAttribute('auto-rotate')
-        });
+        // 1. كود تحريك المكعب الـ 3D بالإيد (تاتش وماوس)
+        const startDrag = (e) => {
+            isDragging = true;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            previousMousePosition = { x: clientX, y: clientY };
+        };
 
-        gsap.to(model, {
+        const doDrag = (e) => {
+            if (!isDragging) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const deltaMove = {
+                x: clientX - previousMousePosition.x,
+                y: clientY - previousMousePosition.y
+            };
+
+            rotation.y += deltaMove.x * 0.5;
+            rotation.x -= deltaMove.y * 0.5;
+
+            cube.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
+            previousMousePosition = { x: clientX, y: clientY };
+        };
+
+        const stopDrag = () => { isDragging = false; };
+
+        // مستمعات الأحداث للمارس واللمس
+        cube.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', doDrag);
+        window.addEventListener('mouseup', stopDrag);
+
+        cube.addEventListener('touchstart', startDrag);
+        window.addEventListener('touchmove', doDrag);
+        window.addEventListener('touchend', stopDrag);
+
+
+        // 2. كود تفصيص المكعب (Explosion) مع السكرول باستخدام GSAP
+        const faces = {
+            front: document.querySelector('.front'),
+            back: document.querySelector('.back'),
+            right: document.querySelector('.right'),
+            left: document.querySelector('.left'),
+            top: document.querySelector('.top'),
+            bottom: document.querySelector('.bottom')
+        };
+
+        // الأنيميشن السحري: مع السكرول بنزود الـ translateZ والـ تباعد لكل وجه
+        gsap.timeline({
             scrollTrigger: {
                 trigger: ".scroll-container",
                 start: "top top",
                 end: "bottom bottom",
-                scrub: 0.5,
-            },
-            attr: { 
-                "camera-orbit": "180deg 75deg 2.5m",
-                "field-of-view": "35deg" 
+                scrub: 1,
             }
-        });
+        })
+        .to(faces.front, { transform: "translateZ(200px)", opacity: 0.5 }, 0)
+        .to(faces.back, { transform: "rotateY(180deg) translateZ(200px)", opacity: 0.5 }, 0)
+        .to(faces.right, { transform: "rotateY(90deg) translateZ(200px)", opacity: 0.5 }, 0)
+        .to(faces.left, { transform: "rotateY(-90deg) translateZ(200px)", opacity: 0.5 }, 0)
+        .to(faces.top, { transform: "rotateX(90deg) translateZ(200px)", opacity: 0.5 }, 0)
+        .to(faces.bottom, { transform: "rotateX(-90deg) translateZ(200px)", opacity: 0.5 }, 0)
+        .to(cube, { rotateX: 120, rotateY: 240 }, 0); // نخليه يلف لفة سينمائية وهو بيتفصص
 
+
+        // إظهار كروت الشرح
         gsap.to("#box1", {
-            scrollTrigger: {
-                trigger: "#box1",
-                start: "top 80%",
-                end: "top 50%",
-                scrub: true,
-            },
-            opacity: 1,
-            y: 0
+            scrollTrigger: { trigger: "#box1", start: "top 80%", end: "top 50%", scrub: true },
+            opacity: 1, y: 0
         });
 
         gsap.to("#box2", {
-            scrollTrigger: {
-                trigger: "#box2",
-                start: "top 80%",
-                end: "top 50%",
-                scrub: true,
-            },
-            opacity: 1,
-            y: 0
+            scrollTrigger: { trigger: "#box2", start: "top 80%", end: "top 50%", scrub: true },
+            opacity: 1, y: 0
         });
     </script>
 </body>

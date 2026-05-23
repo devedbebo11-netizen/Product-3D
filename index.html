@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Luxury Interactive Showcase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobile-First 3D Showcase</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
@@ -15,44 +14,21 @@
             margin: 0;
             background-color: #050505;
             color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
+            /* منع الـ bounce المطاطي في سكرول الموبايل */
+            overscroll-behavior-y: none; 
         }
 
-        /* سيكشن البداية: المنتج 3D وبتحركه بإيدك */
-        .hero-section {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .hero-section h1 {
-            font-size: 3rem;
-            letter-spacing: 3px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, #ff0055, #00ffcc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-section p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* مساحة العرض الـ 3D */
+        /* حاوية الـ 3D الثابتة */
         .viewer-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
-            z-index: 1;
-            pointer-events: auto; /* عشان السكرول يشتغل واللمس كمان */
+            height: 50vh; /* على الموبايل واخد نص الشاشة الفوقاني */
+            z-index: 10;
+            background-color: #050505;
         }
 
         model-viewer {
@@ -61,36 +37,90 @@
             --poster-color: transparent;
         }
 
-        /* سيكشن السكرول اللي هيحصل فيه التفصيص */
+        /* حاوية السكرول والمحتوى */
         .scroll-container {
             position: relative;
-            z-index: 2;
-            pointer-events: none; /* عشان مايغطيش على لمس الموديل */
+            z-index: 20;
+            margin-top: 50vh; /* بيبدأ من تحت الـ 3D عشان مايغطيش عليه */
         }
 
         .scroll-section {
             height: 100vh;
             display: flex;
             align-items: center;
-            padding-left: 10%;
+            justify-content: center;
+            padding: 0 20px;
             box-sizing: border-box;
         }
 
+        /* سيكشن البداية الهيرو */
+        .hero-section {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-section h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #ff0055, #00ffcc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text; /* السطر القياسي اللي بيصلح الـ Warning */
+        }
+
+        .hero-section p {
+            color: #888;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* كروت الشرح المتوافقة مع الموبايل */
         .content-box {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             backdrop-filter: blur(10px);
-            max-width: 350px;
+            width: 100%;
+            max-width: 320px;
             opacity: 0;
-            transform: translateX(-50px);
-            pointer-events: auto; /* عشان لو فيه زراير هنا تتدايس */
+            transform: translateY(30px); /* الحركة للموبايل من تحت لفوق أشيك */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .content-box h2 {
-            margin-0: 0 0 10px 0;
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
             color: #00ffcc;
+        }
+
+        .content-box p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* للتوافق مع الشاشات الكبيرة (الكمبيوتر) لو اتفتحت منه */
+        @media (min-width: 768px) {
+            .viewer-container {
+                width: 50vw;
+                height: 100vh;
+                left: auto;
+                right: 0;
+            }
+            .scroll-container {
+                margin-top: 0;
+                width: 50vw;
+            }
+            .scroll-section {
+                justify-content: flex-start;
+                padding-left: 10%;
+            }
+            .content-box {
+                transform: translateX(-50px);
+            }
         }
     </style>
 </head>
@@ -101,7 +131,8 @@
             id="productModel"
             src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
             alt="3D Product" 
-            camera-controls 
+            camera-controls
+            touch-action="pan-y" /* بيسمح بسكرول الصفحة حتى لو صباعك جه على الـ 3D */
             disable-zoom
             auto-rotate
             shadow-intensity="1">
@@ -109,35 +140,35 @@
     </div>
 
     <div class="scroll-container">
-        <div class="scroll-section" style="justify-content: center; padding: 0;">
+        
+        <div class="scroll-section">
             <div class="hero-section">
-                <h1>The Future Product</h1>
-                <p>🎰 Drag to rotate in 3D | Scroll down to dismantle</p>
+                <h1>The Future Tech</h1>
+                <p>🎰 حرك صباعك فوق عشان تلف المنتج <br> واسحب الشاشة تحت عشان تفصصه</p>
             </div>
         </div>
 
         <div class="scroll-section">
             <div class="content-box" id="box1">
-                <h2>01. Outer Premium Shell</h2>
-                <p>هيكل تيتانيوم خارجي مقاوم للصدمات والخدوش، مصنوع بالكامل من مواد معاد تدويرها لتوفير ملمس فاخر.</p>
+                <h2>01. Ultra-Light Material</h2>
+                <p>ملمس مريح جداً على اليد مع وزن خفيف ك الريشة، متقفل بالكامل بمواد Premium مخصصة للتحمل الفائق.</p>
             </div>
         </div>
 
         <div class="scroll-section">
             <div class="content-box" id="box2">
-                <h2>02. Core Tech & Sensors</h2>
-                <p>البوردة الداخلية والمستشعرات الذكية بتقرأ المؤشرات الحيوية بدقة متناهية وسرعة معالجة فائقة.</p>
+                <h2>02. Next-Gen Sensors</h2>
+                <p>المستشعرات الذكية مخفية بالداخل وبتتفاعل مع حركة الجسم والبيئة المحيطة فورا وبذكاء اصطناعي.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // تفعيل إضافة ScrollTrigger جوه GSAP
+        // تفعيل الـ Plugins
         gsap.registerPlugin(ScrollTrigger);
-
         const model = document.getElementById('productModel');
 
-        // أول ما العميل يبدأ يعمل سكرول، بنوقف اللف الأوتوماتيك عشان الكود يستلم السيطرة
+        // إيقاف الدوران التلقائي مع السكرول
         ScrollTrigger.create({
             trigger: ".scroll-container",
             start: "top top",
@@ -145,43 +176,41 @@
             onEnter: () => model.removeAttribute('auto-rotate')
         });
 
-        // سحر الـ GSAP: التحكم في زوايا الكاميرا والزوم بتاع الـ 3D مع السكرول
-        // الخدعة هنا إننا بنغير خاصية camera-orbit و field-of-view في الموديل
+        // تحريك الكاميرا (التفصيص والزوم) مع السكرول
         gsap.to(model, {
             scrollTrigger: {
                 trigger: ".scroll-container",
                 start: "top top",
                 end: "bottom bottom",
-                scrub: 1, // بيخلي الحركة ناعمة جداً وتابعة لسرعة صباعك على السكرول
+                scrub: 0.5,
             },
-            // مع السكرول الكاميرا هتلف وتعمل زوم كأن المنتج بيتفصص قدامك
             attr: { 
-                "camera-orbit": "90deg 60deg 2m",
-                "field-of-view": "30deg" 
+                "camera-orbit": "180deg 75deg 2.5m",
+                "field-of-view": "35deg" 
             }
         });
 
-        // تحريك الكلام (الكروت الجانبية) وتفتيحها لما نوصل لكل سيكشن
+        // أنيميشن ظهور الكروت (تطلع من تحت لفوق بنعومة)
         gsap.to("#box1", {
             scrollTrigger: {
                 trigger: "#box1",
-                start: "top center",
-                end: "bottom center",
+                start: "top 80%",
+                end: "top 50%",
                 scrub: true,
             },
             opacity: 1,
-            x: 0
+            y: 0
         });
 
         gsap.to("#box2", {
             scrollTrigger: {
                 trigger: "#box2",
-                start: "top center",
-                end: "bottom center",
+                start: "top 80%",
+                end: "top 50%",
                 scrub: true,
             },
             opacity: 1,
-            x: 0
+            y: 0
         });
     </script>
 </body>

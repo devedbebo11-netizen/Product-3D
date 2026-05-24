@@ -86,13 +86,13 @@
             transition: background-color 0.2s, box-shadow 0.2s;
         }
 
-        /* مسار مستقيم (يمين وشمال أصلاً في الـ 0) */
+        /* مسار مستقيم */
         .tile.straight .wire {
             width: 100%;
             height: 6px;
         }
 
-        /* مسار زاوية (تحت ويمين أصلاً في الـ 0) */
+        /* مسار زاوية */
         .tile.corner .wire-1 {
             width: 55%;
             height: 6px;
@@ -104,7 +104,7 @@
             top: 45%;
         }
 
-        /* طاقة النيون الحية */
+        /* طاقة النيون */
         .tile.connected .wire {
             background-color: var(--neon-on);
             box-shadow: 0 0 12px var(--neon-on);
@@ -229,41 +229,38 @@
         
         let currentLevel = 1;
         let tiles = [];
-        const size = 4;
         const maxLevels = 3;
 
-        // تصميم مستويات ذكية بخط سير واضح وممتع
+        // مصفوفة المستويات المنقحة هندسياً والمضمونة بالكامل
         const levelLayouts = {
             1: [
-                { type: 'straight', r: 0, isSource: true, x:0, y:0 }, { type: 'corner', r: 90, x:1, y:0 }, { type: 'straight', r: 90, x:2, y:0 }, { type: 'corner', r: 180, x:3, y:0 },
-                { type: 'straight', r: 90, x:0, y:1 }, { type: 'straight', r: 90, x:1, y:1 }, { type: 'corner', r: 0, x:2, y:1 }, { type: 'corner', r: 270, x:3, y:1 },
-                { type: 'corner', r: 0, x:0, y:2 }, { type: 'straight', r: 0, x:1, y:2 }, { type: 'straight', r: 0, x:2, y:2 }, { type: 'corner', r: 270, x:3, y:2 },
-                { type: 'straight', r: 90, x:0, y:3 }, { type: 'straight', r: 0, x:1, y:3 }, { type: 'straight', r: 0, x:2, y:3 }, { type: 'straight', r: 0, isSink: true, x:3, y:3 }
+                { type: 'straight', r: 0, isSource: true, x: 0, y: 0 }, { type: 'corner', r: 90, x: 1, y: 0 }, { type: 'straight', r: 90, x: 2, y: 0 }, { type: 'corner', r: 180, x: 3, y: 0 },
+                { type: 'straight', r: 90, x: 0, y: 1 }, { type: 'straight', r: 90, x: 1, y: 1 }, { type: 'corner', r: 0, x: 2, y: 1 }, { type: 'corner', r: 270, x: 3, y: 1 },
+                { type: 'corner', r: 0, x: 0, y: 2 }, { type: 'straight', r: 0, x: 1, y: 2 }, { type: 'straight', r: 0, x: 2, y: 2 }, { type: 'corner', r: 270, x: 3, y: 2 },
+                { type: 'straight', r: 90, x: 0, y: 3 }, { type: 'straight', r: 0, x: 1, y: 3 }, { type: 'straight', r: 0, x: 2, y: 3 }, { type: 'straight', r: 0, isSink: true, x: 3, y: 3 }
             ],
             2: [
-                { type: 'corner', r: 0, isSource: true, x:0, y:0 }, { type: 'straight', r: 0, x:1, y:0 }, { type: 'corner', r: 90, x:2, y:0 }, { type: 'straight', r: 90, x:3, y:0 },
-                { type: 'straight', r: 90, x:0, y:1 }, { type: 'corner', r: 0, x:1, y:1 }, { type: 'corner', r: 270, x:2, y:1 }, { type: 'straight', r: 90, x:3, y:1 },
-                { type: 'corner', r: 0, x:0, y:2 }, { type: 'corner', r: 180, x:1, y:2 }, { type: 'straight', r: 0, x:2, y:2 }, { type: 'corner', r: 90, x:3, y:2 },
-                { type: 'straight', r: 0, x:0, y:3 }, { { type: 'straight', r: 90, x:1, y:3 }, { type: 'straight', r: 0, x:2, y:3 }, { type: 'corner', r: 270, isSink: true, x:3, y:3 }
+                { type: 'corner', r: 0, isSource: true, x: 0, y: 0 }, { type: 'straight', r: 0, x: 1, y: 0 }, { type: 'corner', r: 90, x: 2, y: 0 }, { type: 'straight', r: 90, x: 3, y: 1 },
+                { type: 'straight', r: 90, x: 0, y: 1 }, { type: 'corner', r: 0, x: 1, y: 1 }, { type: 'corner', r: 270, x: 2, y: 1 }, { type: 'straight', r: 90, x: 3, y: 0 },
+                { type: 'corner', r: 0, x: 0, y: 2 }, { type: 'corner', r: 180, x: 1, y: 2 }, { type: 'straight', r: 0, x: 2, y: 2 }, { type: 'corner', r: 90, x: 3, y: 2 },
+                { type: 'straight', r: 0, x: 0, y: 3 }, { type: 'straight', r: 90, x: 1, y: 3 }, { type: 'straight', r: 0, x: 2, y: 3 }, { type: 'corner', r: 270, isSink: true, x: 3, y: 3 }
             ],
             3: [
-                { type: 'straight', r: 90, isSource: true, x:0, y:0 }, { type: 'corner', r: 90, x:1, y:0 }, { type: 'straight', r: 0, x:2, y:0 }, { type: 'corner', r: 180, x:3, y:0 },
-                { type: 'corner', r: 0, x:0, y:1 }, { type: 'corner', r: 270, x:1, y:1 }, { type: 'straight', r: 90, x:2, y:1 }, { type: 'straight', r: 90, x:3, y:1 },
-                { type: 'straight', r: 90, x:0, y:2 }, { type: 'corner', r: 0, x:1, y:2 }, { type: 'corner', r: 180, x:2, y:2 }, { type: 'straight', r: 90, x:3, y:2 },
-                { type: 'corner', r: 0, x:0, y:3 }, { type: 'straight', r: 0, x:1, y:3 }, { type: 'corner', r: 270, isSink: true, x:2, y:3 }, { type: 'straight', r: 90, x:3, y:3 }
+                { type: 'straight', r: 90, isSource: true, x: 0, y: 0 }, { type: 'corner', r: 90, x: 1, y: 0 }, { type: 'straight', r: 0, x: 2, y: 0 }, { type: 'corner', r: 180, x: 3, y: 0 },
+                { type: 'corner', r: 0, x: 0, y: 1 }, { type: 'corner', r: 270, x: 1, y: 1 }, { type: 'straight', r: 90, x: 2, y: 1 }, { type: 'straight', r: 90, x: 3, y: 1 },
+                { type: 'straight', r: 90, x: 0, y: 2 }, { type: 'corner', r: 0, x: 1, y: 2 }, { type: 'corner', r: 180, x: 2, y: 2 }, { type: 'straight', r: 90, x: 3, y: 2 },
+                { type: 'corner', r: 0, x: 0, y: 3 }, { type: 'straight', r: 0, x: 1, y: 3 }, { type: 'corner', r: 270, isSink: true, x: 2, y: 3 }, { type: 'straight', r: 90, x: 3, y: 3 }
             ]
         };
 
-        // دالة حساب الفتحات الحقيقية لكل كارت بناءً على زاويته الحالية بالدرجات
         function getOpenings(tile) {
             let base = [];
             if (tile.type === 'straight') {
-                base = ['left', 'right']; // وضع الصفر المبدئي للمستقيم
+                base = ['left', 'right'];
             } else if (tile.type === 'corner') {
-                base = ['bottom', 'right']; // وضع الصفر المبدئي للزاوية
+                base = ['bottom', 'right'];
             }
 
-            // لفة الفتحات مع زوايا الدوران (0, 90, 180, 270)
             const dirOrder = ['top', 'right', 'bottom', 'left'];
             return base.map(dir => {
                 let idx = dirOrder.indexOf(dir);
@@ -280,7 +277,7 @@
 
             const layout = levelLayouts[currentLevel];
 
-            layout.forEach((data, index) => {
+            layout.forEach((data) => {
                 const tileElement = document.createElement('div');
                 tileElement.classList.add('tile', data.type);
                 
@@ -300,7 +297,7 @@
                 if (data.isSource) tileElement.classList.add('source');
                 if (data.isSink) tileElement.classList.add('sink');
 
-                // بعثرة الزوايا في البداية
+                // بعثرة عشوائية ممتعة للاعب
                 let currentRotation = data.isSource || data.isSink ? data.r : [0, 90, 180, 270][Math.floor(Math.random() * 4)];
                 tileElement.style.transform = `rotate(${currentRotation}deg)`;
 
@@ -328,12 +325,12 @@
             updateFlow();
         }
 
-        // دالة الـ Flow الحقيقي؛ بتبدأ من الـ Source وتمشي في الاتجاهات الواصلة وشاً بوش فقط
         function updateFlow() {
-            // ريست لكل الإضاءات أولاً
             tiles.forEach(t => t.element.classList.remove('connected'));
 
             let sourceTile = tiles.find(t => t.isSource);
+            if (!sourceTile) return;
+
             let queue = [sourceTile];
             let visited = new Set();
             let hasSinkConnected = false;
@@ -349,7 +346,6 @@
 
                 let currentOpenings = getOpenings(current);
 
-                // فحص الجيران الأربعة
                 const neighbors = [
                     { dir: 'top', dx: 0, dy: -1, opp: 'bottom' },
                     { dir: 'right', dx: 1, dy: 0, opp: 'left' },
@@ -365,7 +361,6 @@
 
                         if (nextTile) {
                             let nextOpenings = getOpenings(nextTile);
-                            // الشرط الفشيخ: لازم الفتحة المقابلة تكون مفتوحة في وشه بالظبط!
                             if (nextOpenings.includes(n.opp)) {
                                 queue.push(nextTile);
                             }
@@ -374,7 +369,6 @@
                 });
             }
 
-            // فوز فقط لو الكهربا مشيت ووصلت للـ Sink
             if (hasSinkConnected) {
                 setTimeout(() => {
                     if (currentLevel === maxLevels) {

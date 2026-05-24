@@ -33,8 +33,8 @@
         }
 
         .scene3d {
-            width: 160px;
-            height: 160px;
+            width: 200px;
+            height: 250px;
             transform-style: preserve-3d;
             transform: rotateX(-20deg) rotateY(20deg);
             cursor: grab;
@@ -44,96 +44,47 @@
         /* تصميم أوجه أجزاء الساعة بالـ CSS الاحترافي */
         .face {
             position: absolute;
-            width: 160px;
-            height: 160px;
+            width: 200px;
+            height: 250px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 20px;
             box-sizing: border-box;
-            padding: 10px;
             transition: transform 0.1s ease-out;
             backface-visibility: visible;
         }
 
-        /* 1. الشاشة الرقمية المضيئة */
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* فلتر خفيف عشان يعطي روح نيون تتماشى مع فخامة التصميم */
+            filter: drop-shadow(0 0 15px rgba(0, 255, 200, 0.2));
+        }
+
+        /* ضبط أبعاد ومسافات الـ 6 صور المفرغة للعميل */
         .front {
-            transform: translateZ(45px);
-            background: radial-gradient(circle, rgba(0,255,200,0.2) 0%, rgba(5,5,5,0.9) 80%);
-            border: 2px solid #00ffcc;
-            box-shadow: 0 0 25px rgba(0, 255, 200, 0.4);
-            color: #00ffcc;
+            transform: translateZ(50px);
         }
-        .front::before {
-            content: "10:09";
-            font-size: 1.8rem;
-            letter-spacing: 2px;
-            display: block;
-            margin-bottom: 5px;
-            text-shadow: 0 0 10px #00ffcc;
-        }
-
-        /* 2. المستشعرات الخلفية النيون */
+        
         .back {
-            transform: rotateY(180deg) translateZ(45px);
-            background: rgba(5, 5, 5, 0.95);
-            border: 2px solid #ff0055;
-            box-shadow: 0 0 25px rgba(255, 0, 85, 0.3);
-            color: #ff0055;
-        }
-        .back::before {
-            content: "";
-            width: 30px;
-            height: 30px;
-            background: #ff0055;
-            border-radius: 50%;
-            display: block;
-            margin-bottom: 10px;
-            box-shadow: 0 0 15px #ff0055;
+            transform: rotateY(180deg) translateZ(50px);
         }
 
-        /* 3. السوار الأيمن (جلد فخم) */
         .right {
-            transform: rotateY(90deg) translateZ(80px);
-            background: linear-gradient(to bottom, #111, #222, #111);
-            border-left: 3px solid #00ffcc;
-            border-right: 3px solid #00ffcc;
-            color: #aaa;
-            height: 140px;
-            width: 160px;
+            transform: rotateY(90deg) translateZ(100px);
         }
 
-        /* 4. السوار الأيسر (جلد فخم) */
         .left {
-            transform: rotateY(-90deg) translateZ(80px);
-            background: linear-gradient(to bottom, #111, #222, #111);
-            border-left: 3px solid #00ffcc;
-            border-right: 3px solid #00ffcc;
-            color: #aaa;
-            height: 140px;
-            width: 160px;
+            transform: rotateY(-90deg) translateZ(100px);
         }
 
-        /* 5. إطار التيتانيوم الخارجي */
         .top {
-            transform: rotateX(90deg) translateZ(45px);
-            background: transparent;
-            border: 4px solid #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.3);
-            color: #fff;
-            border-radius: 50%; /* شكل دائري للإطار */
+            transform: rotateX(90deg) translateZ(60px);
         }
 
-        /* 6. المعالج والبطارية (جرافيك بوردة الكترونية) */
         .bottom {
-            transform: rotateX(-90deg) translateZ(45px);
-            background: repeating-linear-gradient(45deg, #111, #111 10px, #1a1a1a 10px, #1a1a1a 20px);
-            border: 2px dashed #00ffcc;
-            color: #00ffcc;
+            transform: rotateX(-90deg) translateZ(60px);
         }
 
         /* حاوية السكرول والمحتوى */
@@ -210,12 +161,24 @@
 
     <div class="viewer-container">
         <div class="scene3d" id="watchCube">
-            <div class="face front">الشاشة الذكية</div>
-            <div class="face back">المستشعرات الحيوية</div>
-            <div class="face right">حزام الساعة السفلي</div>
-            <div class="face left">حزام الساعة العلوي</div>
-            <div class="face top">إطار التيتانيوم</div>
-            <div class="face bottom">رقاقة الـ AI والبطارية</div>
+            <div class="face front">
+                <img src="erasebg-transformed 2.png" class="product-img" alt="الواجهة">
+            </div>
+            <div class="face back">
+                <img src="IMG_2550-removebg-preview.png" class="product-img" alt="الخلفية">
+            </div>
+            <div class="face right">
+                <img src="IMG_2540-removebg-preview.png" class="product-img" alt="اليمين">
+            </div>
+            <div class="face left">
+                <img src="IMG_2552-removebg-preview.png" class="product-img" alt="اليسار">
+            </div>
+            <div class="face top">
+                <img src="IMG_2553-removebg-preview.png" class="product-img" alt="من فوق">
+            </div>
+            <div class="face bottom">
+                <img src="IMG_2554.jpeg" class="product-img" alt="من تحت">
+            </div>
         </div>
     </div>
 
@@ -292,7 +255,7 @@
             bottom: document.querySelector('.bottom')
         };
 
-        // تفكيك الأجزاء المرسومة بالـ CSS بنعومة وسلاسة
+        // تفكيك سينمائي خرافي متناسق مع أبعاد صور الساعة الجديدة
         gsap.timeline({
             scrollTrigger: {
                 trigger: ".scroll-container",
@@ -301,12 +264,12 @@
                 scrub: 1.2,
             }
         })
-        .to(parts.front, { transform: "translateZ(180px)" }, 0)
-        .to(parts.back, { transform: "rotateY(180deg) translateZ(180px)" }, 0)
-        .to(parts.right, { transform: "rotateY(90deg) translateZ(220px)" }, 0)
-        .to(parts.left, { transform: "rotateY(-90deg) translateZ(220px)" }, 0)
-        .to(parts.top, { transform: "rotateX(90deg) translateZ(180px)" }, 0)
-        .to(parts.bottom, { transform: "rotateX(-90deg) translateZ(160px)" }, 0)
+        .to(parts.front, { transform: "translateZ(200px)" }, 0)
+        .to(parts.back, { transform: "rotateY(180deg) translateZ(200px)" }, 0)
+        .to(parts.right, { transform: "rotateY(90deg) translateZ(240px)" }, 0)
+        .to(parts.left, { transform: "rotateY(-90deg) translateZ(240px)" }, 0)
+        .to(parts.top, { transform: "rotateX(90deg) translateZ(200px)" }, 0)
+        .to(parts.bottom, { transform: "rotateX(-90deg) translateZ(180px)" }, 0)
         .to(watchCube, { rotateX: 45, rotateY: 135 }, 0);
 
         gsap.to("#card1", {

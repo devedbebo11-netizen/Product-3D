@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Repair: Connect the Grid</title>
+    <title>Cyber Repair: True Logic Grid</title>
     <style>
         :root {
             --bg-color: #050508;
@@ -83,14 +83,16 @@
         .wire {
             position: absolute;
             background-color: var(--neon-off);
-            transition: background-color 0.3s, box-shadow 0.3s;
+            transition: background-color 0.2s, box-shadow 0.2s;
         }
 
+        /* مسار مستقيم (يمين وشمال أصلاً في الـ 0) */
         .tile.straight .wire {
             width: 100%;
             height: 6px;
         }
 
+        /* مسار زاوية (تحت ويمين أصلاً في الـ 0) */
         .tile.corner .wire-1 {
             width: 55%;
             height: 6px;
@@ -102,6 +104,7 @@
             top: 45%;
         }
 
+        /* طاقة النيون الحية */
         .tile.connected .wire {
             background-color: var(--neon-on);
             box-shadow: 0 0 12px var(--neon-on);
@@ -200,7 +203,7 @@
 
     <div class="header">
         <h1>CYBER REPAIR</h1>
-        <p>Rotate tiles to stream the neon power</p>
+        <p>Connect openings face-to-face to stream power</p>
     </div>
 
     <div class="game-container">
@@ -226,28 +229,48 @@
         
         let currentLevel = 1;
         let tiles = [];
+        const size = 4;
         const maxLevels = 3;
 
+        // تصميم مستويات ذكية بخط سير واضح وممتع
         const levelLayouts = {
             1: [
-                { type: 'straight', rotation: 90, isSource: true }, { type: 'corner', rotation: 90 }, { type: 'straight', rotation: 0 }, { type: 'corner', rotation: 180 },
-                { type: 'corner', rotation: 0 }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 270 }, { type: 'straight', rotation: 0 },
-                { type: 'straight', rotation: 0 }, { type: 'corner', rotation: 90 }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 90 },
-                { type: 'corner', rotation: 0 }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 270, isSink: true }, { type: 'straight', rotation: 0 }
+                { type: 'straight', r: 0, isSource: true, x:0, y:0 }, { type: 'corner', r: 90, x:1, y:0 }, { type: 'straight', r: 90, x:2, y:0 }, { type: 'corner', r: 180, x:3, y:0 },
+                { type: 'straight', r: 90, x:0, y:1 }, { type: 'straight', r: 90, x:1, y:1 }, { type: 'corner', r: 0, x:2, y:1 }, { type: 'corner', r: 270, x:3, y:1 },
+                { type: 'corner', r: 0, x:0, y:2 }, { type: 'straight', r: 0, x:1, y:2 }, { type: 'straight', r: 0, x:2, y:2 }, { type: 'corner', r: 270, x:3, y:2 },
+                { type: 'straight', r: 90, x:0, y:3 }, { type: 'straight', r: 0, x:1, y:3 }, { type: 'straight', r: 0, x:2, y:3 }, { type: 'straight', r: 0, isSink: true, x:3, y:3 }
             ],
             2: [
-                { type: 'corner', rotation: 90, isSource: true }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 180 }, { type: 'straight', rotation: 0 },
-                { type: 'straight', rotation: 0 }, { type: 'corner', rotation: 0 }, { type: 'corner', rotation: 270 }, { type: 'straight', rotation: 0 },
-                { type: 'corner', rotation: 90 }, { type: 'straight', rotation: 90 }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 180 },
-                { type: 'straight', rotation: 90 }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 270, isSink: true }, { type: 'straight', rotation: 0 }
+                { type: 'corner', r: 0, isSource: true, x:0, y:0 }, { type: 'straight', r: 0, x:1, y:0 }, { type: 'corner', r: 90, x:2, y:0 }, { type: 'straight', r: 90, x:3, y:0 },
+                { type: 'straight', r: 90, x:0, y:1 }, { type: 'corner', r: 0, x:1, y:1 }, { type: 'corner', r: 270, x:2, y:1 }, { type: 'straight', r: 90, x:3, y:1 },
+                { type: 'corner', r: 0, x:0, y:2 }, { type: 'corner', r: 180, x:1, y:2 }, { type: 'straight', r: 0, x:2, y:2 }, { type: 'corner', r: 90, x:3, y:2 },
+                { type: 'straight', r: 0, x:0, y:3 }, { { type: 'straight', r: 90, x:1, y:3 }, { type: 'straight', r: 0, x:2, y:3 }, { type: 'corner', r: 270, isSink: true, x:3, y:3 }
             ],
             3: [
-                { type: 'straight', rotation: 0, isSource: true }, { type: 'corner', rotation: 90 }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 180 },
-                { type: 'corner', rotation: 0 }, { type: 'corner', rotation: 270 }, { type: 'straight', rotation: 0 }, { type: 'straight', rotation: 0 },
-                { type: 'straight', rotation: 0 }, { type: 'straight', rotation: 0 }, { type: 'corner', rotation: 90 }, { type: 'corner', rotation: 180 },
-                { type: 'corner', rotation: 90 }, { type: 'straight', rotation: 90 }, { type: 'corner', rotation: 270 }, { type: 'straight', rotation: 0, isSink: true }
+                { type: 'straight', r: 90, isSource: true, x:0, y:0 }, { type: 'corner', r: 90, x:1, y:0 }, { type: 'straight', r: 0, x:2, y:0 }, { type: 'corner', r: 180, x:3, y:0 },
+                { type: 'corner', r: 0, x:0, y:1 }, { type: 'corner', r: 270, x:1, y:1 }, { type: 'straight', r: 90, x:2, y:1 }, { type: 'straight', r: 90, x:3, y:1 },
+                { type: 'straight', r: 90, x:0, y:2 }, { type: 'corner', r: 0, x:1, y:2 }, { type: 'corner', r: 180, x:2, y:2 }, { type: 'straight', r: 90, x:3, y:2 },
+                { type: 'corner', r: 0, x:0, y:3 }, { type: 'straight', r: 0, x:1, y:3 }, { type: 'corner', r: 270, isSink: true, x:2, y:3 }, { type: 'straight', r: 90, x:3, y:3 }
             ]
         };
+
+        // دالة حساب الفتحات الحقيقية لكل كارت بناءً على زاويته الحالية بالدرجات
+        function getOpenings(tile) {
+            let base = [];
+            if (tile.type === 'straight') {
+                base = ['left', 'right']; // وضع الصفر المبدئي للمستقيم
+            } else if (tile.type === 'corner') {
+                base = ['bottom', 'right']; // وضع الصفر المبدئي للزاوية
+            }
+
+            // لفة الفتحات مع زوايا الدوران (0, 90, 180, 270)
+            const dirOrder = ['top', 'right', 'bottom', 'left'];
+            return base.map(dir => {
+                let idx = dirOrder.indexOf(dir);
+                let shift = tile.rotation / 90;
+                return dirOrder[(idx + shift) % 4];
+            });
+        }
 
         function initGame() {
             gridElement.innerHTML = '';
@@ -257,79 +280,108 @@
 
             const layout = levelLayouts[currentLevel];
 
-            layout.forEach((data) => {
-                const tile = document.createElement('div');
-                tile.classList.add('tile', data.type);
+            layout.forEach((data, index) => {
+                const tileElement = document.createElement('div');
+                tileElement.classList.add('tile', data.type);
                 
                 if (data.type === 'straight') {
                     const wire = document.createElement('div');
                     wire.classList.add('wire');
-                    tile.appendChild(wire);
+                    tileElement.appendChild(wire);
                 } else if (data.type === 'corner') {
                     const wire1 = document.createElement('div');
                     const wire2 = document.createElement('div');
                     wire1.classList.add('wire', 'wire-1');
                     wire2.classList.add('wire', 'wire-2');
-                    tile.appendChild(wire1);
-                    tile.appendChild(wire2);
+                    tileElement.appendChild(wire1);
+                    tileElement.appendChild(wire2);
                 }
 
-                if (data.isSource) tile.classList.add('source');
-                if (data.isSink) tile.classList.add('sink');
+                if (data.isSource) tileElement.classList.add('source');
+                if (data.isSink) tileElement.classList.add('sink');
 
-                let currentRotation = data.isSource || data.isSink ? data.rotation : [0, 90, 180, 270][Math.floor(Math.random() * 4)];
-                tile.style.transform = `rotate(${currentRotation}deg)`;
+                // بعثرة الزوايا في البداية
+                let currentRotation = data.isSource || data.isSink ? data.r : [0, 90, 180, 270][Math.floor(Math.random() * 4)];
+                tileElement.style.transform = `rotate(${currentRotation}deg)`;
 
                 const tileObj = {
-                    element: tile,
+                    element: tileElement,
                     type: data.type,
                     rotation: currentRotation,
-                    targetRotation: data.rotation,
+                    x: data.x,
+                    y: data.y,
                     isSource: data.isSource || false,
                     isSink: data.isSink || false
                 };
 
-                tile.addEventListener('click', () => {
+                tileElement.addEventListener('click', () => {
                     if (tileObj.isSource || tileObj.isSink) return;
                     tileObj.rotation = (tileObj.rotation + 90) % 360;
-                    tile.style.transform = `rotate(${tileObj.rotation}deg)`;
-                    checkConnections();
+                    tileElement.style.transform = `rotate(${tileObj.rotation}deg)`;
+                    updateFlow();
                 });
 
-                gridElement.appendChild(tile);
+                gridElement.appendChild(tileElement);
                 tiles.push(tileObj);
             });
 
-            checkConnections();
+            updateFlow();
         }
 
-        function checkConnections() {
-            let allCorrect = true;
-            
-            tiles.forEach(tile => {
-                tile.element.classList.remove('connected');
-                if (tile.rotation !== tile.targetRotation && !tile.isSource && !tile.isSink) {
-                    if (tile.type === 'straight' && Math.abs(tile.rotation - tile.targetRotation) === 180) {
-                        // متوافق
-                    } else {
-                        allCorrect = false;
+        // دالة الـ Flow الحقيقي؛ بتبدأ من الـ Source وتمشي في الاتجاهات الواصلة وشاً بوش فقط
+        function updateFlow() {
+            // ريست لكل الإضاءات أولاً
+            tiles.forEach(t => t.element.classList.remove('connected'));
+
+            let sourceTile = tiles.find(t => t.isSource);
+            let queue = [sourceTile];
+            let visited = new Set();
+            let hasSinkConnected = false;
+
+            while (queue.length > 0) {
+                let current = queue.shift();
+                let key = `${current.x},${current.y}`;
+                if (visited.has(key)) continue;
+                visited.add(key);
+
+                current.element.classList.add('connected');
+                if (current.isSink) hasSinkConnected = true;
+
+                let currentOpenings = getOpenings(current);
+
+                // فحص الجيران الأربعة
+                const neighbors = [
+                    { dir: 'top', dx: 0, dy: -1, opp: 'bottom' },
+                    { dir: 'right', dx: 1, dy: 0, opp: 'left' },
+                    { dir: 'bottom', dx: 0, dy: 1, opp: 'top' },
+                    { dir: 'left', dx: -1, dy: 0, opp: 'right' }
+                ];
+
+                neighbors.forEach(n => {
+                    if (currentOpenings.includes(n.dir)) {
+                        let nx = current.x + n.dx;
+                        let ny = current.y + n.dy;
+                        let nextTile = tiles.find(t => t.x === nx && t.y === ny);
+
+                        if (nextTile) {
+                            let nextOpenings = getOpenings(nextTile);
+                            // الشرط الفشيخ: لازم الفتحة المقابلة تكون مفتوحة في وشه بالظبط!
+                            if (nextOpenings.includes(n.opp)) {
+                                queue.push(nextTile);
+                            }
+                        }
                     }
-                }
-            });
+                });
+            }
 
-            tiles.forEach(tile => {
-                if (tile.isSource || tile.rotation === tile.targetRotation || (tile.type === 'straight' && Math.abs(tile.rotation - tile.targetRotation) === 180)) {
-                    tile.element.classList.add('connected');
-                }
-            });
-
-            if (allCorrect) {
+            // فوز فقط لو الكهربا مشيت ووصلت للـ Sink
+            if (hasSinkConnected) {
                 setTimeout(() => {
                     if (currentLevel === maxLevels) {
-                        winMessage.innerText = "ALL SYSTEMS REPAIRED! ⚡";
+                        winMessage.innerText = "ALL SYSTEMS ONLINE! ⚡";
                         nextBtn.innerText = "PLAY AGAIN";
                     } else {
-                        winMessage.innerText = "SYSTEM ONLINE";
+                        winMessage.innerText = "SYSTEM REPAIRED";
                         nextBtn.innerText = "NEXT LEVEL";
                     }
                     winOverlay.classList.add('active');

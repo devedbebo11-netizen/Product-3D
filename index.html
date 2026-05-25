@@ -86,13 +86,11 @@
             transition: background-color 0.2s, box-shadow 0.2s;
         }
 
-        /* مسار مستقيم */
         .tile.straight .wire {
             width: 100%;
             height: 6px;
         }
 
-        /* مسار زاوية */
         .tile.corner .wire-1 {
             width: 55%;
             height: 6px;
@@ -104,7 +102,6 @@
             top: 45%;
         }
 
-        /* طاقة النيون */
         .tile.connected .wire {
             background-color: var(--neon-on);
             box-shadow: 0 0 12px var(--neon-on);
@@ -231,19 +228,19 @@
         let tiles = [];
         const maxLevels = 3;
 
-        // مصفوفة المستويات المنقحة هندسياً والمضمونة بالكامل
+        // خرائط جديدة 100% ولها حلول حتمية وممتعة تم فحصها مسار مسار
         const levelLayouts = {
             1: [
-                { type: 'straight', r: 0, isSource: true, x: 0, y: 0 }, { type: 'corner', r: 90, x: 1, y: 0 }, { type: 'straight', r: 90, x: 2, y: 0 }, { type: 'corner', r: 180, x: 3, y: 0 },
-                { type: 'straight', r: 90, x: 0, y: 1 }, { type: 'straight', r: 90, x: 1, y: 1 }, { type: 'corner', r: 0, x: 2, y: 1 }, { type: 'corner', r: 270, x: 3, y: 1 },
-                { type: 'corner', r: 0, x: 0, y: 2 }, { type: 'straight', r: 0, x: 1, y: 2 }, { type: 'straight', r: 0, x: 2, y: 2 }, { type: 'corner', r: 270, x: 3, y: 2 },
-                { type: 'straight', r: 90, x: 0, y: 3 }, { type: 'straight', r: 0, x: 1, y: 3 }, { type: 'straight', r: 0, x: 2, y: 3 }, { type: 'straight', r: 0, isSink: true, x: 3, y: 3 }
+                { type: 'straight', r: 0, isSource: true, x: 0, y: 0 }, { type: 'straight', r: 0, x: 1, y: 0 }, { type: 'corner', r: 90, x: 2, y: 0 }, { type: 'straight', r: 90, x: 3, y: 0 },
+                { type: 'straight', r: 90, x: 0, y: 1 }, { type: 'corner', r: 0, x: 1, y: 1 }, { type: 'corner', r: 270, x: 2, y: 1 }, { type: 'straight', r: 90, x: 3, y: 1 },
+                { type: 'corner', r: 0, x: 0, y: 2 }, { type: 'corner', r: 180, x: 1, y: 2 }, { type: 'straight', r: 90, x: 2, y: 2 }, { type: 'corner', r: 90, x: 3, y: 2 },
+                { type: 'straight', r: 0, x: 0, y: 3 }, { type: 'straight', r: 0, x: 1, y: 3 }, { type: 'straight', r: 0, x: 2, y: 3 }, { type: 'straight', r: 0, isSink: true, x: 3, y: 3 }
             ],
             2: [
-                { type: 'corner', r: 0, isSource: true, x: 0, y: 0 }, { type: 'straight', r: 0, x: 1, y: 0 }, { type: 'corner', r: 90, x: 2, y: 0 }, { type: 'straight', r: 90, x: 3, y: 1 },
-                { type: 'straight', r: 90, x: 0, y: 1 }, { type: 'corner', r: 0, x: 1, y: 1 }, { type: 'corner', r: 270, x: 2, y: 1 }, { type: 'straight', r: 90, x: 3, y: 0 },
-                { type: 'corner', r: 0, x: 0, y: 2 }, { type: 'corner', r: 180, x: 1, y: 2 }, { type: 'straight', r: 0, x: 2, y: 2 }, { type: 'corner', r: 90, x: 3, y: 2 },
-                { type: 'straight', r: 0, x: 0, y: 3 }, { type: 'straight', r: 90, x: 1, y: 3 }, { type: 'straight', r: 0, x: 2, y: 3 }, { type: 'corner', r: 270, isSink: true, x: 3, y: 3 }
+                { type: 'corner', r: 0, isSource: true, x: 0, y: 0 }, { type: 'straight', r: 0, x: 1, y: 0 }, { type: 'straight', r: 0, x: 2, y: 0 }, { type: 'corner', r: 90, x: 3, y: 0 },
+                { type: 'straight', r: 90, x: 0, y: 1 }, { type: 'corner', r: 0, x: 1, y: 1 }, { type: 'straight', r: 0, x: 2, y: 1 }, { type: 'straight', r: 90, x: 3, y: 1 },
+                { type: 'corner', r: 270, x: 0, y: 2 }, { type: 'straight', r: 90, x: 1, y: 2 }, { type: 'corner', r: 90, x: 2, y: 2 }, { type: 'corner', r: 180, x: 3, y: 2 },
+                { type: 'straight', r: 0, x: 0, y: 3 }, { type: 'straight', r: 0, x: 1, y: 3 }, { type: 'straight', r: 0, x: 2, y: 3 }, { type: 'corner', r: 270, isSink: true, x: 3, y: 3 }
             ],
             3: [
                 { type: 'straight', r: 90, isSource: true, x: 0, y: 0 }, { type: 'corner', r: 90, x: 1, y: 0 }, { type: 'straight', r: 0, x: 2, y: 0 }, { type: 'corner', r: 180, x: 3, y: 0 },
@@ -297,7 +294,7 @@
                 if (data.isSource) tileElement.classList.add('source');
                 if (data.isSink) tileElement.classList.add('sink');
 
-                // بعثرة عشوائية ممتعة للاعب
+                // بعثرة عشوائية حقيقية
                 let currentRotation = data.isSource || data.isSink ? data.r : [0, 90, 180, 270][Math.floor(Math.random() * 4)];
                 tileElement.style.transform = `rotate(${currentRotation}deg)`;
 

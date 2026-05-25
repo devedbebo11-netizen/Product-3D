@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Repair: Fixed Grid</title>
+    <title>Cyber Repair: Fixed Logic</title>
     <style>
         :root {
             --bg-color: #050508;
@@ -226,9 +226,10 @@
         
         let currentLevel = 1;
         let tiles = [];
+        const size = 4;
         const maxLevels = 3;
 
-        // هندسة وتصحيح المربعات ونوع الـ Sink بالملي لضمان الحل المشرف
+        // ترتيب المربعات هندسياً 100% بالإحداثيات الصحيحة لكل خانة في الـ 4x4
         const levelLayouts = {
             1: [
                 { type: 'straight', r: 0, isSource: true, x: 0, y: 0 }, { type: 'straight', r: 0, x: 1, y: 0 }, { type: 'corner', r: 90, x: 2, y: 0 }, { type: 'straight', r: 90, x: 3, y: 0 },
@@ -239,8 +240,8 @@
             2: [
                 { type: 'corner', r: 0, isSource: true, x: 0, y: 0 }, { type: 'straight', r: 0, x: 1, y: 0 }, { type: 'straight', r: 0, x: 2, y: 0 }, { type: 'corner', r: 90, x: 3, y: 0 },
                 { type: 'straight', r: 90, x: 0, y: 1 }, { type: 'corner', r: 0, x: 1, y: 1 }, { type: 'straight', r: 0, x: 2, y: 1 }, { type: 'straight', r: 90, x: 3, y: 1 },
-                { type: 'corner', r: 270, x: 0, y: 2 }, { type: 'straight', r: 90, x: 1, y: 2 }, { type: 'corner', r: 90, x: 2, y: 2 }, { type: 'corner', r: 180, x: 3, y: 2 },
-                { type: 'straight', r: 0, x: 0, y: 3 }, { type: 'straight', r: 0, x: 1, y: 3 }, { type: 'straight', r: 0, x: 2, y: 3 }, { type: 'corner', r: 270, isSink: true, x: 3, y: 3 }
+                { type: 'straight', r: 90, x: 0, y: 2 }, { type: 'corner', r: 270, x: 1, y: 2 }, { type: 'corner', r: 90, x: 2, y: 2 }, { type: 'straight', r: 90, x: 3, y: 2 },
+                { type: 'straight', r: 0, x: 0, y: 3 }, { type: 'straight', r: 0, x: 1, y: 3 }, { type: 'corner', r: 0, x: 2, y: 3 }, { type: 'corner', r: 270, isSink: true, x: 3, y: 3 }
             ],
             3: [
                 { type: 'straight', r: 90, isSource: true, x: 0, y: 0 }, { type: 'corner', r: 90, x: 1, y: 0 }, { type: 'straight', r: 0, x: 2, y: 0 }, { type: 'corner', r: 180, x: 3, y: 0 },
@@ -294,7 +295,7 @@
                 if (data.isSource) tileElement.classList.add('source');
                 if (data.isSink) tileElement.classList.add('sink');
 
-                // بعثرة عشوائية ذكية للقطع القابلة للتدوير فقط
+                // لخبطة عشوائية للقطع ما عدا البداية والنهاية عشان اللعبة تبدأ ممتعة
                 let currentRotation = data.isSource || data.isSink ? data.r : [0, 90, 180, 270][Math.floor(Math.random() * 4)];
                 tileElement.style.transform = `rotate(${currentRotation}deg)`;
 
